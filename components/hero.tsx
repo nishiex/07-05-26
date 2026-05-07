@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
@@ -31,8 +31,8 @@ const OrbitingSkills = dynamic(() => import("@/components/ui/orbiting-skills"), 
 export function Hero() {
   const rootRef = useRef<HTMLDivElement>(null)
 
-  const titleLine1 = ["Your", "business", "phone."]
-  const titleLine2 = ["Built", "for", "how", "you", "actually", "work."]
+  const titleLine1 = ["The", "customer", "conversation", "stack"]
+  const titleLine2 = ["that", "runs", "itself."]
 
   useEffect(() => {
     const root = rootRef.current
@@ -65,6 +65,7 @@ export function Hero() {
       gsap.set(".hero-sub", { y: 18, opacity: 0, filter: "blur(6px)" })
       gsap.set(".hero-cta", { y: 16, opacity: 0, scale: 0.94 })
       gsap.set(".hero-cta-arrow", { x: -8, opacity: 0 })
+      gsap.set(".hero-trust > span", { y: 12, opacity: 0 })
       gsap.set(".hero-right", { y: 48, opacity: 0, filter: "blur(12px)" })
 
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } })
@@ -101,6 +102,9 @@ export function Hero() {
       /* CTA — overshoot in, then arrow tracks across */
       tl.to(".hero-cta", { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.6)" }, 1.5)
         .to(".hero-cta-arrow", { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.7)
+
+      /* Trust row — stagger in */
+      tl.to(".hero-trust > span", { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out" }, 1.85)
 
       /* Right column — defocus lift */
       tl.to(".hero-right", { y: 0, opacity: 1, filter: "blur(0px)", duration: 1, ease: "power3.out" }, 0.85)
@@ -181,7 +185,7 @@ export function Hero() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
               </span>
-              <span>CLOUD PHONE · VOICE · SMS · AI</span>
+              <span>AI-NATIVE COMMUNICATION PLATFORM</span>
             </div>
 
             <h1 className="hero-title font-serif text-4xl md:text-5xl lg:text-[52px] font-normal leading-[1.06] tracking-tight mb-6 text-balance">
@@ -208,16 +212,15 @@ export function Hero() {
             </h1>
 
             <p className="hero-sub text-lg text-gray-500 mb-6 leading-relaxed max-w-[480px]">
-              Phone numbers, voice, SMS and AI on one platform. Carrier-grade routing, built-in
-              compliance, one bill. See it live on a 20-minute call with our team.
+              Twiching combines cloud calling, AI reception, omnichannel inboxes, CRM sync, and live analytics into one modern workspace.
             </p>
 
-            <div className="mb-5">
+            <div className="flex flex-wrap items-center gap-3 mb-8">
               <a
                 href="#"
                 className="hero-cta group inline-flex items-center gap-2 bg-accent text-white text-[15px] font-medium font-mono pl-7 pr-3 py-2 rounded-full shadow-[0_8px_24px_-6px_rgba(26,188,217,0.45)] transition-[transform,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:bg-[color:var(--accent-dark)] active:translate-y-0 active:scale-[0.98]"
               >
-                Request a Demo
+                Start Free Trial
                 <span className="grid place-items-center h-8 w-8 rounded-full bg-white/15 ring-1 ring-inset ring-white/25 overflow-hidden">
                   <ArrowRight
                     className="hero-cta-arrow h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -225,6 +228,32 @@ export function Hero() {
                   />
                 </span>
               </a>
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 text-[15px] font-medium font-mono text-foreground/80 px-5 py-2.5 rounded-full border border-border hover:bg-muted transition-colors duration-200"
+              >
+                Book a Demo
+              </a>
+            </div>
+
+            {/* Trust Row */}
+            <div className="hero-trust flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] font-mono text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                99.99% uptime
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                AI-first routing
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                CRM synced
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                Setup in minutes
+              </span>
             </div>
           </div>
 
