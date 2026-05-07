@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useRef } from "react"
-import { Check } from "lucide-react"
+import { Check, PhoneIncoming, MessageSquare, Bot, Hash } from "lucide-react"
 import { TimelineAnimation } from "@/components/ui/timeline-animation"
 import MotionDrawer from "@/components/ui/motion-drawer"
 
