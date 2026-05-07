@@ -1,200 +1,244 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import gsap from "gsap"
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion"
-import {
-  ArrowRight,
-  Check,
-  PhoneIncoming,
-  MessageSquare,
-  Bot,
-  Hash,
-} from "lucide-react"
+import React, { useRef } from "react"
+import { Check } from "lucide-react"
+import { TimelineAnimation } from "@/components/ui/timeline-animation"
+import MotionDrawer from "@/components/ui/motion-drawer"
 
 /* ─── Hero ─────────────────────────────────────────────────────────────────── */
 export function Hero() {
-  const rootRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const root = rootRef.current
-    if (!root) return
-
-    const ctx = gsap.context(() => {
-      gsap.set(".hero-pulse", { scaleX: 0, transformOrigin: "0% 50%" })
-      gsap.set(".hero-eyebrow", { y: 16, opacity: 0 })
-      gsap.set(".hero-word", { y: 60, opacity: 0, filter: "blur(10px)" })
-      gsap.set(".hero-sub", { y: 18, opacity: 0, filter: "blur(6px)" })
-      gsap.set(".hero-cta", { y: 16, opacity: 0, scale: 0.94 })
-      gsap.set(".hero-cta-arrow", { x: -8, opacity: 0 })
-      gsap.set(".hero-trust > span", { y: 12, opacity: 0 })
-      gsap.set(".hero-stat", { y: 20, opacity: 0 })
-
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } })
-
-      tl.to(".hero-pulse", { scaleX: 1, duration: 0.85, ease: "power2.inOut" }, 0)
-        .to(".hero-pulse", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.55, ease: "power2.in" }, ">-0.05")
-        .to(".hero-eyebrow", { y: 0, opacity: 1, duration: 0.5 }, 0.2)
-        .to(".hero-line-1 .hero-word", { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.1, stagger: 0.06, ease: "power4.out" }, 0.4)
-        .to(".hero-line-2 .hero-word", { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.9, stagger: 0.055, ease: "power3.out" }, 0.75)
-        .to(".hero-sub", { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6 }, 1.2)
-        .to(".hero-cta", { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.6)" }, 1.4)
-        .to(".hero-cta-arrow", { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 1.6)
-        .to(".hero-trust > span", { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out" }, 1.75)
-        .to(".hero-stat", { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }, 1.9)
-
-      /* Ambient orb drift */
-      gsap.to('[data-orb="a"]', { xPercent: 6, yPercent: 5, duration: 16, ease: "sine.inOut", repeat: -1, yoyo: true })
-      gsap.to('[data-orb="b"]', { xPercent: -8, yPercent: -6, duration: 20, ease: "sine.inOut", repeat: -1, yoyo: true })
-    }, rootRef)
-
-    return () => ctx.revert()
-  }, [])
+  const timelineRef = useRef<HTMLDivElement>(null)
 
   return (
     <section
-      ref={rootRef}
+      ref={timelineRef}
       id="s-hero"
       data-sec="hero"
-      className="relative min-h-screen overflow-hidden flex flex-col bg-foreground text-background"
+      className="relative min-h-screen bg-foreground text-background overflow-hidden flex flex-col"
     >
-      {/* Top signal pulse */}
-      <div
-        aria-hidden="true"
-        className="hero-pulse pointer-events-none absolute top-0 left-0 right-0 h-px z-10"
-        style={{ background: "linear-gradient(90deg, rgba(26,188,217,0) 0%, rgba(26,188,217,0.9) 50%, rgba(26,188,217,0) 100%)" }}
-      />
-
-      {/* Mesh gradient background */}
+      {/* ── Ambient orb mesh (replaces ShaderGradient) ── */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          data-orb="a"
-          className="hero-orb"
+          className="hero-orb absolute"
           style={{
             width: 700,
             height: 700,
             top: "-200px",
-            left: "-100px",
-            background: "radial-gradient(closest-side, rgba(26,188,217,0.22), rgba(26,188,217,0) 70%)",
+            left: "-120px",
+            background: "radial-gradient(closest-side, rgba(26,188,217,0.28), rgba(26,188,217,0) 70%)",
           }}
         />
         <div
-          data-orb="b"
-          className="hero-orb"
+          className="hero-orb absolute"
           style={{
             width: 600,
             height: 600,
-            bottom: "-100px",
+            bottom: "-120px",
             right: "-80px",
-            background: "radial-gradient(closest-side, rgba(23,151,172,0.18), rgba(23,151,172,0) 70%)",
+            background: "radial-gradient(closest-side, rgba(23,151,172,0.2), rgba(23,151,172,0) 70%)",
           }}
         />
-        {/* Subtle grain overlay */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
             backgroundRepeat: "repeat",
             backgroundSize: "128px",
           }}
         />
       </div>
 
-      {/* ── Main content ── */}
-      <div className="relative z-10 grow flex flex-col justify-center px-6 md:px-14 lg:px-20 pt-28 pb-16">
+      {/* ── Mobile header (MotionDrawer) ── */}
+      <div className="relative z-10 flex md:hidden items-center justify-between px-6 pt-5">
+        <MotionDrawer
+          direction="left"
+          width={280}
+          backgroundColor="#1a1a1a"
+          clsBtnClassName="bg-foreground/80 border-r border-white/10 text-white"
+          contentClassName="bg-foreground border-r border-white/10 text-background"
+          btnClassName="bg-white/10 text-background relative w-fit p-2 left-0 top-0 rounded-lg"
+        >
+          <nav className="space-y-4 pt-4">
+            <p className="text-[11px] font-mono tracking-widest text-background/40 uppercase mb-6">Menu</p>
+            {["Product", "Pricing", "Docs", "Blog"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="block py-2 text-background/80 hover:text-background font-mono text-sm transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+        </MotionDrawer>
+
+        <TimelineAnimation
+          once
+          as="a"
+          animationNum={1}
+          timelineRef={timelineRef}
+          href="#"
+          className="inline-flex items-center gap-2 bg-accent text-white text-sm font-mono px-5 py-2.5 rounded-full shadow-[0_4px_20px_-4px_rgba(26,188,217,0.5)]"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-white/70" />
+          Start Free Trial
+        </TimelineAnimation>
+      </div>
+
+      {/* ── Desktop header ── */}
+      <header className="relative z-10 hidden md:flex items-center justify-between px-10 py-5">
+        <TimelineAnimation
+          once
+          animationNum={1}
+          timelineRef={timelineRef}
+          className="flex items-center gap-2"
+        >
+          <span className="font-serif text-xl font-medium text-background tracking-tight">twiching</span>
+          <span className="text-accent text-xl leading-none">.</span>
+        </TimelineAnimation>
+
+        <TimelineAnimation
+          once
+          as="nav"
+          animationNum={2}
+          timelineRef={timelineRef}
+          className="hidden md:flex items-center gap-10 text-sm font-mono text-background/60"
+        >
+          {["Product", "Pricing", "Docs", "Blog"].map((item) => (
+            <a key={item} href="#" className="hover:text-background transition-colors">
+              {item}
+            </a>
+          ))}
+        </TimelineAnimation>
+
+        <TimelineAnimation
+          once
+          as="a"
+          animationNum={3}
+          timelineRef={timelineRef}
+          href="#"
+          className="inline-flex items-center gap-2 bg-accent text-white text-sm font-mono px-6 py-2.5 rounded-full shadow-[0_4px_20px_-4px_rgba(26,188,217,0.5)] hover:bg-[color:var(--accent-dark)] transition-colors"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-white/70" />
+          Start Free Trial
+        </TimelineAnimation>
+      </header>
+
+      {/* ── Main hero content ── */}
+      <div className="relative z-10 grow flex flex-col justify-center px-6 md:px-10 lg:px-20 pt-10 pb-16">
 
         {/* Eyebrow */}
-        <div className="hero-eyebrow inline-flex items-center gap-2 w-fit bg-white/10 backdrop-blur border border-accent/30 text-accent text-xs font-medium font-mono px-4 py-[6px] rounded-full mb-10">
+        <TimelineAnimation
+          once
+          animationNum={3}
+          timelineRef={timelineRef}
+          className="inline-flex items-center gap-2 w-fit bg-white/8 backdrop-blur border border-accent/25 text-accent text-xs font-mono px-4 py-1.5 rounded-full mb-10"
+        >
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
           </span>
-          <span>AI-NATIVE COMMUNICATION PLATFORM</span>
-        </div>
+          AI-NATIVE COMMUNICATION PLATFORM
+        </TimelineAnimation>
 
-        {/* Headline — fluid, large */}
-        <h1 className="hero-title font-serif font-normal leading-[0.95] tracking-tighter mb-10 text-background"
-          style={{ fontSize: "clamp(2.8rem, 8vw, 7rem)" }}
+        {/* Headline */}
+        <TimelineAnimation
+          once
+          as="h1"
+          animationNum={4}
+          timelineRef={timelineRef}
+          className="font-serif font-normal leading-[0.95] tracking-tighter mb-10 text-background"
+          style={{ fontSize: "clamp(2.8rem, 8vw, 7rem)" } as React.CSSProperties}
         >
-          <span className="hero-line-1 block">
-            {["The", "customer"].map((w, i) => (
-              <span key={`a-${i}`} className="hero-word inline-block mr-[0.2em] will-change-transform">{w}</span>
-            ))}
+          The customer
+          <br />
+          conversation stack{" "}
+          <span className="italic" style={{ color: "var(--accent)" }}>
+            that&nbsp;runs&nbsp;itself.
           </span>
-          <span className="hero-line-2 block">
-            {["conversation", "stack"].map((w, i) => (
-              <span key={`b-${i}`} className="hero-word inline-block mr-[0.2em] will-change-transform">{w}</span>
-            ))}
-          </span>
-          <span className="hero-line-2 block italic" style={{ color: "var(--accent)" }}>
-            {["that", "runs", "itself."].map((w, i) => (
-              <span key={`c-${i}`} className="hero-word inline-block mr-[0.2em] will-change-transform">{w}</span>
-            ))}
-          </span>
-        </h1>
+        </TimelineAnimation>
 
-        {/* Sub + CTAs row */}
+        {/* CTAs + sub-copy row */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-14">
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-3">
-            <a
+          <div className="flex flex-wrap gap-3">
+            <TimelineAnimation
+              once
+              as="a"
+              animationNum={5}
+              timelineRef={timelineRef}
               href="#"
-              className="hero-cta group inline-flex items-center gap-2 bg-accent text-white text-[15px] font-medium font-mono pl-7 pr-3 py-2.5 rounded-full shadow-[0_8px_32px_-6px_rgba(26,188,217,0.55)] transition-[transform,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:bg-[color:var(--accent-dark)] active:translate-y-0 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 bg-white text-foreground text-[15px] font-medium font-mono px-8 py-4 rounded-full shadow-[0_0_28px_rgba(26,188,217,0.35)] hover:bg-white/90 transition-colors"
             >
+              <span className="w-2 h-2 rounded-full bg-accent" />
               Start Free Trial
-              <span className="grid place-items-center h-8 w-8 rounded-full bg-white/15 ring-1 ring-inset ring-white/25">
-                <ArrowRight
-                  className="hero-cta-arrow h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                  strokeWidth={2.2}
-                />
-              </span>
-            </a>
-            <a
+            </TimelineAnimation>
+
+            <TimelineAnimation
+              once
+              as="a"
+              animationNum={6}
+              timelineRef={timelineRef}
               href="#"
-              className="inline-flex items-center gap-2 text-[15px] font-medium font-mono text-background/70 px-5 py-2.5 rounded-full border border-background/20 hover:bg-background/10 transition-colors duration-200"
+              className="inline-flex items-center gap-2 border border-background/20 bg-background/5 backdrop-blur-md text-background text-[15px] font-medium font-mono px-8 py-4 rounded-full hover:bg-background/10 transition-colors"
             >
               Book a Demo
-            </a>
+            </TimelineAnimation>
           </div>
 
-          {/* Sub copy */}
-          <p className="hero-sub text-lg text-background/60 leading-relaxed max-w-sm">
+          <TimelineAnimation
+            once
+            as="p"
+            animationNum={7}
+            timelineRef={timelineRef}
+            className="max-w-sm text-background/55 text-lg font-light leading-relaxed"
+          >
             Cloud calling, AI reception, omnichannel inboxes, CRM sync, and live analytics — one modern workspace.
-          </p>
+          </TimelineAnimation>
         </div>
 
         {/* Trust row */}
-        <div className="hero-trust flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 text-[13px] font-mono text-background/50">
+        <TimelineAnimation
+          once
+          animationNum={8}
+          timelineRef={timelineRef}
+          className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 text-[13px] font-mono text-background/40"
+        >
           {["99.99% uptime", "AI-first routing", "CRM synced", "Setup in minutes"].map((item) => (
             <span key={item} className="inline-flex items-center gap-1.5">
               <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
               {item}
             </span>
           ))}
-        </div>
+        </TimelineAnimation>
       </div>
 
-      {/* ── Bottom stats grid (HeroDigitalSuccess-style footer) ── */}
-      <div className="relative z-10 px-6 md:px-14 lg:px-20 pb-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-background/10 rounded-2xl overflow-hidden ring-1 ring-background/10 backdrop-blur-sm">
+      {/* ── Bottom stats grid ── */}
+      <div className="relative z-10 p-6 md:p-10 flex justify-end">
+        <TimelineAnimation
+          once
+          animationNum={9}
+          timelineRef={timelineRef}
+          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-background/8 backdrop-blur-lg rounded-xl overflow-hidden ring-1 ring-background/10"
+        >
           {[
             { label: "Cloud Calling", sub: "Carrier-grade PSTN" },
             { label: "AI Reception", sub: "24/7 intelligent routing" },
             { label: "Omnichannel", sub: "Voice · SMS · Chat" },
             { label: "Live Analytics", sub: "Real-time dashboards" },
-          ].map((s) => (
-            <div key={s.label} className="hero-stat px-6 py-5 bg-background/5">
-              <p className="text-sm font-medium font-mono text-background/90 mb-0.5">{s.label}</p>
-              <p className="text-[12px] font-mono text-background/40">{s.sub}</p>
-            </div>
+          ].map((s, i) => (
+            <TimelineAnimation
+              key={s.label}
+              once
+              animationNum={10 + i}
+              timelineRef={timelineRef}
+              className="px-6 py-5 bg-background/5"
+            >
+              <p className="text-sm font-medium font-mono text-background/80 mb-0.5">{s.label}</p>
+              <p className="text-[12px] font-mono text-background/35">{s.sub}</p>
+            </TimelineAnimation>
           ))}
-        </div>
+        </TimelineAnimation>
       </div>
     </section>
   )
